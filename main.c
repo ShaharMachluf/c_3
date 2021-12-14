@@ -6,7 +6,7 @@ int main(){
     char word[WORD];
     char txt[TXT];
     scanf("%s",word);
-    scanf("%TXT[^~]", name);
+    scanf("%TXT[^~]s", name);
     printf("Gematria Sequences: ");
     f1(word, txt);
     printf("\nAtbash Sequences: ");
