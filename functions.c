@@ -3,7 +3,7 @@
 #define TXT 1024
 #define WORD 30
 void f1(char* word, char* txt){
-    int gimW = 0, gimT = 0;
+    int gimW = 0, gimT = 0, first = 1;
     char *wptr = word, *tptrEnd = txt, *tptrStart = txt;
     char curr = 'a';
     char *currWord = txt;
@@ -17,7 +17,7 @@ void f1(char* word, char* txt){
             gimW += (int) curr-'a'+1;
         }
     }
-    while(*tptrEnd != '~'){//first sequence
+    while(*tptrEnd != '~'){
         //check the gimetry of the text between tptrStart and tptrEnd
         curr = *(tptrEnd);
         if('A' <= curr && 'Z' >= curr){
@@ -28,11 +28,15 @@ void f1(char* word, char* txt){
         }
         if(gimW == gimT){ //print the string
             currWord = tptrStart;
+            if(first == 0){
+                printf("~");
+            } else{
+                first = 0;
+            }
             while(currWord != tptrEnd){
                 printf("%c", *currWord);
                 currWord++;
             }
-            break;
         }
         else if(gimT < gimW){ //add another char
             tptrEnd++;
@@ -47,44 +51,13 @@ void f1(char* word, char* txt){
             tptrStart++;
         }
     }
-    while (*tptrEnd != '~')//rest of the sequences
-    {
-        //check the gimetry of the text between tptrStart and tptrEnd
-        curr = *(tptrEnd);
-        if('A' <= curr && 'Z' >= curr){
-            gimT += (int) curr-'A'+1;
-        }
-        else if('a' <= curr && 'z' >= curr){
-            gimT += (int) curr-'a'+1;
-        }
-        if(gimW == gimT){ //print the string
-            currWord = tptrStart;
-            printf("~");
-            while(currWord != tptrEnd){
-                printf("%c", *currWord);
-                currWord++;
-            }
-        }
-        else if(gimT < gimW){ //add another char
-            tptrEnd++;
-        }
-        else{//sub the first char and sub it's value from gimT
-            if('A' <= curr && 'Z' >= curr){
-                gimT -= (int) *tptrStart-'A'+1;
-            }
-            else if('a' <= curr && 'z' >= curr){
-                gimT += (int) *tptrStart-'a'+1;
-            }
-            tptrStart++;
-        }
-    } 
     return 1;  
 }
 
 void f2(char* word, char* txt){
     char atbash[strlen(word)], backAtbash[strlen(word)], curr[] = "";
     char *aptr = atbash, *bptr = backAtbash, *tptrEnd = txt+strlen(word)-1, *tptrStart = txt, *wptr = txt;
-    int flag = 0;
+    int flag = 0, first = 1;
     //init atbash
     for(int i=0; i<strlen(word);++i){
         if('A'<=word[i] && word[i]<='Z'){
@@ -122,8 +95,12 @@ void f2(char* word, char* txt){
                 }
             }
             if(*aptr == '\0'){//in case all the chars are the same
+                if(first == 0){
+                    printf("~");
+                }else{
+                    first =0;
+                }
                 printf("%s", curr);
-                flag = 1;
             }
             char curr[] = "";
         }
@@ -144,64 +121,16 @@ void f2(char* word, char* txt){
                 }
             }
             if(*bptr == '\0'){//in case all the chars are the same
+                if(first == 0){
+                    printf("~");
+                }else{
+                    first = 0;
+                }
                 printf("%s", curr);
-                flag = 1;
                 break;
             }
         }
-        if(flag == 1){
-            break;
-        }
         char curr[] = "";
-        *aptr = atbash;
-        *bptr = backAtbash;
-    }
-    while(*tptrEnd != '~' && *tptrStart != '~'){//not first sequence
-        while(*tptrStart != *aptr && *tptrStart != *bptr && *tptrStart != '~'){//find the first char that is the same
-            tptrStart++;
-        }
-        if(*tptrStart == *aptr){//if the first char is the same as the first char in atbash
-            tptrEnd = tptrStart;
-            while(*aptr!= '\0' && *tptrEnd != '~'){//compare chars from the text to chars from atbash
-                if(*tptrEnd == ' '|| *tptrEnd == '\n' || *tptrEnd == '\t'){
-                    strncat(curr, tptrEnd, 1);
-                    tptrEnd++;
-                }
-                else if(*tptrEnd == *aptr){
-                    strncat(curr, tptrEnd, 1);
-                    tptrEnd++;
-                    aptr++;
-                }
-                else{
-                    break;
-                }
-            }
-            if(*aptr == '\0'){//in case all the chars are the same
-                printf("~%s", curr);
-            }
-            char curr[] = "";
-        }
-        if(*tptrStart == *bptr){//if the first char is the same as the first char in backAtbash
-            tptrEnd = tptrStart;
-            while(*bptr!= '\0' && *tptrEnd != '~'){//compare chars from the text to chars from backAtbash
-                if(*tptrEnd == ' '|| *tptrEnd == '\n' || *tptrEnd == '\t'){
-                    strncat(curr, tptrEnd, 1);
-                    tptrEnd++;
-                }
-                else if(*tptrEnd == *bptr){
-                    strncat(curr, tptrEnd, 1);
-                    tptrEnd++;
-                    aptr++;
-                }
-                else{
-                    break;
-                }
-            }
-            if(*bptr == '\0'){//in case all the chars are the same
-                printf("%s", curr);
-            }
-            char curr[] = "";
-        }
         *aptr = atbash;
         *bptr = backAtbash;
     }
@@ -217,7 +146,7 @@ struct character
 void f3(char* word, char* txt){
     char *wptr = word, *tptrEnd = txt, *tptrStart = txt, *curr = txt;
     struct character arr [WORD];
-    int i =0, flag = 0;
+    int i =0, flag = 0, first = 1;
     while(*wptr != ' ' && *wptr != '\n' && *wptr != '\t'){//init the array with the characters from word
         arr[i].c = *wptr;
         arr[i].tag = 0;
