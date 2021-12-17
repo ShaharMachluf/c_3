@@ -3,8 +3,8 @@
 #include "funcs.h"
 #define TXT 1024
 #define WORD 30
-void f1(char* word, int wordLen ,char* txt, int txtLen){
-    int gimW = 0, gimT = 0, first = 1;
+int f1(char* word, int wordLen ,char* txt, int txtLen){
+    int gimW = 0, gimT = 0, first = 1, jChanged = 1;
     char *wptr = word, *tptrEnd = txt, *tptrStart = txt;
     char curr = 'a';
     char *currWord = txt;
@@ -18,42 +18,53 @@ void f1(char* word, int wordLen ,char* txt, int txtLen){
             gimW += (int) curr-'a'+1;
         }
     }
-    while(*tptrEnd != '\0'&&*tptrStart != '\0'){
+    int i=0, j=0;
+    while(j <= txtLen&&i < txtLen){
         //check the gimetry of the text between tptrStart and tptrEnd
-        curr = *(tptrEnd);
-        if('A' <= curr && 'Z' >= curr){
-            gimT += (int) curr-'A'+1;
-        }
-        else if('a' <= curr && 'z' >= curr){
-            gimT += (int) curr-'a'+1;
+        printf(" i= %d, j=%d\n", i, j);
+        printf("gimT =%d\n", gimT);
+        if(jChanged){
+            curr = tptrEnd[j];
+            if('A' <= curr && 'Z' >= curr){
+                gimT += (int) curr-'A'+1;
+            }
+            else if('a' <= curr && 'z' >= curr){
+                gimT += (int) curr-'a'+1;
+            }
         }
         if(gimW == gimT){ //print the string
-            currWord = tptrStart;
+            currWord = &(tptrStart[i]);
             if(first == 0){
                 printf("~");
             } else{
                 first = 0;
             }
-            while(currWord != tptrEnd+1){
+            while(currWord != &(tptrEnd[j])+1){
                 printf("%c", *currWord);
                 currWord++;
             }
-            tptrEnd++;
+            j++;
+            jChanged = 1;
+            continue;
         }
-        else if(gimT < gimW){ //add another char
-            tptrEnd++;
+        if(gimT < gimW){ //add another char
+            j++;
+            jChanged = 1;
         }
-        else{//sub the first char and sub it's value from gimT
+        if(gimT>gimW){//sub the first char and sub it's value from gimT
+            curr = tptrStart[i]; 
             if('A' <= curr && 'Z' >= curr){
-                gimT -= (int) *tptrStart-'A'+1;
+                gimT = gimT-((int) (curr-'A'+1));
             }
             else if('a' <= curr && 'z' >= curr){
-                gimT -= (int) *tptrStart-'a'+1;
+                printf("entered if");
+                gimT =gimT-((int) (curr-'a'+1));
             }
-            tptrStart++;
+            i++;
+            jChanged = 0;
         }
     }
-    return;  
+    return 1; 
 }
 
 void f2(char* word, int wordLen ,char* txt, int txtLen){
