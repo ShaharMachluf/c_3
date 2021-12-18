@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
 #include "funcs.h"
 #define TXT 1024
 #define WORD 30
@@ -71,66 +72,83 @@ int f1(char* word, int wordLen ,char* txt, int txtLen){
 }
 
 void f2(char* word, int wordLen ,char* txt, int txtLen){
-    char atbash[wordLen], backAtbash[wordLen], curr[] = "";
-    char *aptr = atbash, *bptr = backAtbash, *tptrEnd = txt+wordLen-1, *tptrStart = txt;
+    char *atbash = (char*)malloc(wordLen*sizeof(char));
+    char *backAtbash = (char*)malloc(wordLen*sizeof(char));
+    char *aptr = atbash, *bptr = backAtbash,*tptrEnd = txt;
+    char *tptrStart = txt;
+    char a= 'a', b='b', c='c';
     int first = 1;
+    int j=0, k=0;
+    char *curr = (char*)calloc(TXT,sizeof(char));
+    if(curr == NULL || atbash == NULL || backAtbash == NULL){
+        return;
+    }
     //init atbash
     for(int i=0; i<wordLen;++i){
-        if('A'<=word[i] && word[i]<='Z'){
-            atbash[i] = 'A' + 'Z' - word[i];
-        }
-        else if('a'<=word[i] && word[i]<='a'){
-            atbash[i] = 'a' + 'z' - word[i];
+        if('A'<=*(word+i) && *(word+i)<='Z'){
+            *(atbash+i) = 'Z' - *(word+i) + 'A';
         }
         else{
-            atbash[i] = word[i];
+            *(atbash+i) = 'z' - *(word+i) + 'a';
         }
     }
     //init backAtbash
     for(int i=0;i<wordLen;++i){
         backAtbash[i]= atbash[wordLen-i-1];
     }
-    while(*tptrEnd != '~' && *tptrStart != '~'){//first sequence
-        while(*tptrStart != *aptr && *tptrStart != *bptr && *tptrStart != '~'){//find the first char that is the same
-            tptrStart++;
+    while(j <=txtLen && k<=txtLen){
+        k++;
+        printf("%c",c);
+        printf("%c", b);
+        printf("%c", a);
+        while(k <= txtLen && c != a && c != b){//find the first char that is the same
+            k++;
+            c= *(tptrStart+k);
         }
-        if(*tptrStart == *aptr){//if the first char is the same as the first char in atbash
-            tptrEnd = tptrStart;
-            while(*aptr!= '\0' && *tptrEnd != '~'){//compare chars from the text to chars from atbash
-                if(*tptrEnd == ' '|| *tptrEnd == '\n' || *tptrEnd == '\t'){
-                    strncat(curr, tptrEnd, 1);
-                    tptrEnd++;
+        if(k > txtLen){
+            break;
+        }
+        if(c == a){//if the first char is the same as the first char in atbash
+            j = k;
+            while(*aptr!= 0 && j <= txtLen){//compare chars from the text to chars from atbash
+                if(tptrEnd[j] == ' '|| tptrEnd[j] == '\n' || tptrEnd[j] == '\t'){
+                    strncat(curr, &(tptrEnd[j]), 1);
+                    j++;
                 }
-                else if(*tptrEnd == *aptr){
-                    strncat(curr, tptrEnd, 1);
-                    tptrEnd++;
+                else if(tptrEnd[j] == *aptr){
+                    strncat(curr, &(tptrEnd[j]), 1);
+                    j++;
                     aptr++;
                 }
                 else{
                     break;
                 }
             }
-            if(*aptr == '\0'){//in case all the chars are the same
+            if(*aptr == 0){//in case all the chars are the same
                 if(first == 0){
                     printf("~");
                 }else{
-                    first =0;
+                    first = 0;
                 }
                 printf("%s", curr);
             }
-            strcpy(curr, "");
+            free(curr);
+            curr = (char*) calloc(TXT, sizeof(char));
+            if(curr == NULL){
+                return;
+            }
         }
-        if(*tptrStart == *bptr){//if the first char is the same as the first char in backAtbash
-            tptrEnd = tptrStart;
-            while(*bptr!= '\0' && *tptrEnd != '~'){//compare chars from the text to chars from backAtbash
-                if(*tptrEnd == ' '|| *tptrEnd == '\n' || *tptrEnd == '\t'){
-                    strncat(curr, tptrEnd, 1);
-                    tptrEnd++;
+        if(tptrStart[k] == *bptr){//if the first char is the same as the first char in backAtbash
+            j = k;
+            while(*bptr!= '\0' && j < txtLen){//compare chars from the text to chars from backAtbash
+                if(tptrEnd[j] == ' '|| tptrEnd[j] == '\n' || tptrEnd[j] == '\t'){
+                    strncat(curr, &(tptrEnd[j]), 1);
+                    j++;
                 }
-                else if(*tptrEnd == *bptr){
-                    strncat(curr, tptrEnd, 1);
-                    tptrEnd++;
-                    aptr++;
+                else if(tptrEnd[j] == *bptr){
+                    strncat(curr, &(tptrEnd[j]), 1);
+                    j++;
+                    bptr++;
                 }
                 else{
                     break;
@@ -145,11 +163,18 @@ void f2(char* word, int wordLen ,char* txt, int txtLen){
                 printf("%s", curr);
                 break;
             }
+            free(curr);
+            curr = (char*) calloc(TXT, sizeof(char));
+            if(curr == NULL){
+                return;
+            }
         }
-        strcpy(curr, "");
         aptr = atbash;
         bptr = backAtbash;
     }
+    free(atbash);
+    free(backAtbash);
+    free(curr);
     return;
 }
 
