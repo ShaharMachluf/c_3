@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #include "funcs.h"
 #define TXT 1024
 #define WORD 30
@@ -19,10 +20,8 @@ int f1(char* word, int wordLen ,char* txt, int txtLen){
         }
     }
     int i=0, j=0;
-    while(j <= txtLen&&i < txtLen){
+    while(j < txtLen&&i < txtLen){
         //check the gimetry of the text between tptrStart and tptrEnd
-        printf(" i= %d, j=%d\n", i, j);
-        printf("gimT =%d\n", gimT);
         if(jChanged){
             curr = tptrEnd[j];
             if('A' <= curr && 'Z' >= curr){
@@ -33,19 +32,20 @@ int f1(char* word, int wordLen ,char* txt, int txtLen){
             }
         }
         if(gimW == gimT){ //print the string
-            currWord = &(tptrStart[i]);
-            if(first == 0){
-                printf("~");
-            } else{
-                first = 0;
-            }
-            while(currWord != &(tptrEnd[j])+1){
-                printf("%c", *currWord);
-                currWord++;
+            if(isalpha(tptrEnd[j])){
+                currWord = &(tptrStart[i]);
+                if(first == 0){
+                    printf("~");
+                } else{
+                    first = 0;
+                }
+                while(currWord != &(tptrEnd[j])+1){
+                    printf("%c", *currWord);
+                    currWord++;
+                }
             }
             j++;
             jChanged = 1;
-            continue;
         }
         if(gimT < gimW){ //add another char
             j++;
@@ -57,10 +57,13 @@ int f1(char* word, int wordLen ,char* txt, int txtLen){
                 gimT = gimT-((int) (curr-'A'+1));
             }
             else if('a' <= curr && 'z' >= curr){
-                printf("entered if");
                 gimT =gimT-((int) (curr-'a'+1));
             }
             i++;
+            while (isalpha(tptrStart[i]) == 0)
+            {
+                i++;
+            }
             jChanged = 0;
         }
     }
