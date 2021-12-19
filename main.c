@@ -8,7 +8,7 @@ int main(){
     char txt[TXT];
     int wordLen=0, txtLen=0;
     scanf("%s",word);
-    scanf("%1024[^~]s", txt);
+    scanf("%[^~]s", txt);
     wordLen = strlen(word);
     txtLen = strlen(txt);
     printf("Gematria Sequences: ");
