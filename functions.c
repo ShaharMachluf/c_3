@@ -180,9 +180,12 @@ struct character
 
 void f3(char* word, int wordLen, char* txt, int txtLen){
     char *wptr = word, *tptrEnd = txt, *tptrStart = txt, *curr = txt;
-    struct character arr [WORD];
+    struct character *arr = (struct character*)malloc((wordLen+1)*sizeof(struct character));
     int i =0, flag = 0, first = 1;
-    while(*wptr != ' ' && *wptr != '\n' && *wptr != '\t'){//init the array with the characters from word
+    if(arr == NULL){
+        return;
+    }
+    while(*wptr != 0){//init the array with the characters from word
         arr[i].c = *wptr;
         arr[i].tag = 0;
         wptr++;
@@ -191,17 +194,15 @@ void f3(char* word, int wordLen, char* txt, int txtLen){
     arr[i].c = '\0';
     arr[i].tag = 0;
     i=0;
-    while(*wptr != ' ' && *wptr != '\n' && *wptr != '\t'){//init the array with the characters from word
-        arr[i].c = *wptr;
-        arr[i].tag = 0;
-        wptr++;
-        i++;
-    }
-    arr[i].c = '\0';
-    arr[i].tag = 0;
-    while (*tptrStart != '~' && *tptrEnd != '~')//not first sequence
+    while (*tptrStart != 0 && *tptrEnd != 0)
     {
-        while(*tptrStart != '~'){//find the beggining of th sequence
+        while(*tptrStart != 0){//find the beggining of the sequence
+            i=0;
+            while (arr[i].c != '\0')
+            {
+                arr[i].tag = 0;
+                i++;
+            }
             i=0;
             while(arr[i].c != '\0'){//check if current char is in word
                 if(*tptrStart == arr[i].c && arr[i].tag == 0){
@@ -216,9 +217,12 @@ void f3(char* word, int wordLen, char* txt, int txtLen){
             }
             tptrStart++;
         }
-        flag = 0;
+        if(*tptrStart==0){
+            break;
+        }
         tptrEnd = tptrStart + 1;
-        while(*tptrEnd != '~' && *tptrStart != '~'){//find the rest of the sequence
+        while(*tptrEnd != 0 && *tptrStart != 0){//find the rest of the sequence
+            flag = 0;
             if(*tptrEnd == ' ' || *tptrEnd == '\n' || *tptrEnd == '\t'){
                 tptrEnd++;
                 continue;
@@ -242,6 +246,7 @@ void f3(char* word, int wordLen, char* txt, int txtLen){
                     flag = 1;
                     break;
                 }
+                i++;
             }
             if(flag == 2){//we found the whole word
                 break;
@@ -255,11 +260,13 @@ void f3(char* word, int wordLen, char* txt, int txtLen){
             }else{
                 first = 0;
             }
-            while(curr!=tptrEnd){//print the sequence
+            while(curr!=tptrEnd+1){//print the sequence
                 printf("%c", *curr);
+                curr++;
             }
-            break;
         }
+        tptrStart++;
     }
+    free(arr);
     return;
 }
