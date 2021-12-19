@@ -21,6 +21,9 @@ int f1(char* word, int wordLen ,char* txt, int txtLen){
         }
     }
     int i=0, j=0;
+    while(isalpha(tptrStart[i])==0){
+        i++;
+    }
     while(j < txtLen&&i < txtLen){
         //check the gimetry of the text between tptrStart and tptrEnd
         if(jChanged){
