@@ -74,11 +74,9 @@ int f1(char* word, int wordLen ,char* txt, int txtLen){
 void f2(char* word, int wordLen ,char* txt, int txtLen){
     char *atbash = (char*)malloc(wordLen*sizeof(char));
     char *backAtbash = (char*)malloc(wordLen*sizeof(char));
-    char *aptr = atbash, *bptr = backAtbash,*tptrEnd = txt;
-    char *tptrStart = txt;
+    char *aptr = atbash, *bptr = backAtbash,*tptrEnd = txt, *tptrStart = txt;
     char a= 'a', b='b', c='c';
-    int first = 1;
-    int j=0, k=0;
+    int first = 1, j=0, k=0;
     char *curr = (char*)calloc(TXT,sizeof(char));
     if(curr == NULL || atbash == NULL || backAtbash == NULL){
         return;
@@ -98,9 +96,6 @@ void f2(char* word, int wordLen ,char* txt, int txtLen){
     }
     while(j <=txtLen && k<=txtLen){
         k++;
-        printf("%c",c);
-        printf("%c", b);
-        printf("%c", a);
         while(k <= txtLen && c != a && c != b){//find the first char that is the same
             k++;
             c= *(tptrStart+k);
@@ -108,7 +103,7 @@ void f2(char* word, int wordLen ,char* txt, int txtLen){
         if(k > txtLen){
             break;
         }
-        if(c == a){//if the first char is the same as the first char in atbash
+        if(tptrStart[k] == *aptr){//if the first char is the same as the first char in atbash
             j = k;
             while(*aptr!= 0 && j <= txtLen){//compare chars from the text to chars from atbash
                 if(tptrEnd[j] == ' '|| tptrEnd[j] == '\n' || tptrEnd[j] == '\t'){
@@ -161,7 +156,6 @@ void f2(char* word, int wordLen ,char* txt, int txtLen){
                     first = 0;
                 }
                 printf("%s", curr);
-                break;
             }
             free(curr);
             curr = (char*) calloc(TXT, sizeof(char));

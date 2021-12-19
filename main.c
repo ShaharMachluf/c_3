@@ -15,7 +15,7 @@ int main(){
     f1(word, wordLen, txt, txtLen);
     printf("\nAtbash Sequences: ");
     f2(word, wordLen, txt, txtLen);
-    // printf("\nAnagram Sequences: ");
-    // f3(word, wordLen, txt, txtLen);
+    printf("\nAnagram Sequences: ");
+    f3(word, wordLen, txt, txtLen);
     return 1;
 }
